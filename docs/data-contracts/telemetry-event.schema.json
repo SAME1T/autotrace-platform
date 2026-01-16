@@ -1,0 +1,59 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://autotrace.dev/schemas/telemetry-event.schema.json",
+  "title": "TelemetryEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "event_version", "event_type", "occurred_at", "source", "vehicle"],
+  "properties": {
+    "event_id": { "type": "string", "description": "Unique event identifier (UUID recommended)" },
+    "event_version": { "type": "string", "enum": ["1.0"] },
+    "event_type": { "type": "string", "enum": ["TELEMETRY_EVENT"] },
+    "occurred_at": { "type": "string", "format": "date-time", "description": "ISO-8601 timestamp in UTC" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "producer"],
+      "properties": {
+        "system": { "type": "string", "description": "e.g., obd_logger, can_dataset_ingestion" },
+        "producer": { "type": "string" }
+      }
+    },
+    "vehicle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vehicle_id"],
+      "properties": {
+        "vehicle_id": { "type": "string", "description": "Anonymized vehicle identifier" },
+        "vin_hash": { "type": "string", "description": "Optional hashed VIN (never raw VIN)" }
+      }
+    },
+    "signals": {
+      "type": "array",
+      "description": "Optional signal list (speed, rpm, coolant_temp, etc.)",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "value"],
+        "properties": {
+          "name": { "type": "string" },
+          "value": { "type": "number" },
+          "unit": { "type": "string" }
+        }
+      }
+    },
+    "dtc_codes": {
+      "type": "array",
+      "description": "Optional diagnostic trouble codes",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code"],
+        "properties": {
+          "code": { "type": "string", "description": "DTC code, e.g., P0300" },
+          "description": { "type": "string" }
+        }
+      }
+    }
+  }
+}

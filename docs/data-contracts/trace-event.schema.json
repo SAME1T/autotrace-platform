@@ -1,0 +1,64 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://autotrace.dev/schemas/trace-event.schema.json",
+  "title": "TraceEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "event_version", "event_type", "occurred_at", "source", "part", "process_step"],
+  "properties": {
+    "event_id": { "type": "string", "description": "Unique event identifier (UUID recommended)" },
+    "event_version": { "type": "string", "enum": ["1.0"] },
+    "event_type": { "type": "string", "enum": ["TRACE_EVENT"] },
+    "occurred_at": { "type": "string", "format": "date-time", "description": "ISO-8601 timestamp in UTC" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "producer"],
+      "properties": {
+        "system": { "type": "string", "description": "Source system name (e.g., ingestion, api, simulator)" },
+        "producer": { "type": "string", "description": "Component producing the event (e.g., bosch_ingestion)" }
+      }
+    },
+    "part": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["part_serial", "part_number"],
+      "properties": {
+        "part_serial": { "type": "string" },
+        "part_number": { "type": "string" },
+        "lot_id": { "type": "string" },
+        "supplier_id": { "type": "string" }
+      }
+    },
+    "process_step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["station_id", "step_name"],
+      "properties": {
+        "station_id": { "type": "string" },
+        "step_name": { "type": "string" },
+        "line_id": { "type": "string" },
+        "shift_id": { "type": "string" },
+        "operator_id": { "type": "string" },
+        "machine_id": { "type": "string" }
+      }
+    },
+    "measurements": {
+      "type": "array",
+      "description": "Optional measurement list for this step",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "value"],
+        "properties": {
+          "name": { "type": "string" },
+          "value": { "type": "number" },
+          "unit": { "type": "string" },
+          "lower_limit": { "type": "number" },
+          "upper_limit": { "type": "number" },
+          "is_ok": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

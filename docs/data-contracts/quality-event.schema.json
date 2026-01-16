@@ -1,0 +1,39 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://autotrace.dev/schemas/quality-event.schema.json",
+  "title": "QualityEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "event_version", "event_type", "occurred_at", "source", "quality"],
+  "properties": {
+    "event_id": { "type": "string", "description": "Unique event identifier (UUID recommended)" },
+    "event_version": { "type": "string", "enum": ["1.0"] },
+    "event_type": { "type": "string", "enum": ["QUALITY_EVENT"] },
+    "occurred_at": { "type": "string", "format": "date-time", "description": "ISO-8601 timestamp in UTC" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "producer"],
+      "properties": {
+        "system": { "type": "string" },
+        "producer": { "type": "string" }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "case_type", "status", "severity", "summary"],
+      "properties": {
+        "case_id": { "type": "string" },
+        "case_type": { "type": "string", "enum": ["DEFECT", "NCR", "CAPA", "EIGHT_D"] },
+        "status": { "type": "string", "enum": ["OPEN", "IN_PROGRESS", "WAITING", "CLOSED", "REJECTED"] },
+        "severity": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+        "summary": { "type": "string", "minLength": 3, "maxLength": 300 },
+        "description": { "type": "string", "maxLength": 5000 },
+        "related_part_serial": { "type": "string" },
+        "related_station_id": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}
